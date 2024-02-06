@@ -1,4 +1,4 @@
-#Qantas Hotels booking website
+## Qantas Hotels booking website
 
 This application displays Hotels where user can compare price and book their vacation.
 
