@@ -1,0 +1,42 @@
+.hotel-container {
+    margin-bottom: 20px;
+    max-width: 80% !important;
+    background-color: rgb(255, 255, 255);
+    border-radius: 4px;
+    padding: 0px;
+    position: relative;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 2px 0px;
+    transition: all 0.1s linear 0s;
+    box-sizing: border-box;
+}
+.hotel-content {
+    padding: 2rem 0.25rem 1.25rem 3rem !important;
+    flex-basis: 300px;
+}
+.hotel-pricing {
+    padding: 2rem 0.75rem 0.75rem;
+    flex: 1 1 auto;
+    align-items: flex-end;
+    flex-direction: column;
+
+}
+.hotel-img-block {  
+    height: 100%;
+    border-radius: 4px 0px 0px 4px;
+    overflow: hidden;
+    background-color: transparent;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    justify-content: center;
+}
+.hotel-img {
+    display: block;
+    height: 100%;
+    object-fit: cover;
+    .img {
+        overflow-clip-margin: content-box;
+        overflow: clip;
+    }
+}
