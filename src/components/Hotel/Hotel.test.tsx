@@ -45,6 +45,12 @@ describe('Hotel component', () => {
     expect(screen.getByText(/Sleeps 2/)).toBeInTheDocument();
   });
 
+  it('should show fallback badge when inclusions are empty', () => {
+    renderWithRouter(<Hotel {...seasideEscapeHotel} inclusions={[]} currentPage={1} />);
+
+    expect(screen.getByText('Hotel stay')).toBeInTheDocument();
+  });
+
   it('should navigate to hotel details on click', async () => {
     renderHotel();
 
