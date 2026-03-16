@@ -1,4 +1,4 @@
-# Qantas Hotels App
+# Hotels App
 
 React + TypeScript app for browsing hotels, sorting by price/popularity, and viewing hotel details.
 
