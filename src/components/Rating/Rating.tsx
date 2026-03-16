@@ -1,38 +1,39 @@
-import React from 'react';
-
-interface IRating {
-  ratingType: string;
+interface RatingProps {
+  ratingType: 'self' | 'star';
   ratingValue: number;
 }
 
-const Rating: React.FC<IRating> = (props) => {
-  const { ratingType, ratingValue } = props;
-
-  const buildRatings = (ratingValue: number, ratingType: string) => {
+const Rating = ({ ratingType, ratingValue }: RatingProps) => {
+  const buildRatings = () => {
     const stars = [];
-    let precision = false;
-    if (ratingValue % 1 > 0) precision = true;
-    const ratingValueWithoutPrecision = Math.floor(ratingValue);
+    const hasHalf = ratingValue % 1 > 0;
+    const wholeStars = Math.floor(ratingValue);
+
     for (let i = 0; i < 5; i++) {
-      if (ratingValueWithoutPrecision > i) {
-        ratingType === 'star'
-          ? stars.push(<img key={i} src="./images/star-fill.svg" />)
-          : stars.push(<img key={i} src="./images/circle-fill.svg" />);
-      } else if (precision) {
-        precision = false;
-        ratingType === 'star'
-          ? stars.push(<img key={i} src="./images/star-half.svg" />)
-          : stars.push(<img key={i} src="./images/circle-half.svg" />);
+      if (i < wholeStars) {
+        const src =
+          ratingType === 'star'
+            ? `${process.env.PUBLIC_URL}/images/star-fill.svg`
+            : `${process.env.PUBLIC_URL}/images/circle-fill.svg`;
+        stars.push(<img key={i} src={src} alt="filled rating" />);
+      } else if (i === wholeStars && hasHalf) {
+        const src =
+          ratingType === 'star'
+            ? `${process.env.PUBLIC_URL}/images/star-half.svg`
+            : `${process.env.PUBLIC_URL}/images/circle-half.svg`;
+        stars.push(<img key={i} src={src} alt="half rating" />);
       } else {
-        ratingType === 'star'
-          ? stars.push(<img key={i} src="./images/star.svg" />)
-          : stars.push(<img key={i} src="./images/circle.svg" />);
+        const src =
+          ratingType === 'star'
+            ? `${process.env.PUBLIC_URL}/images/star.svg`
+            : `${process.env.PUBLIC_URL}/images/circle.svg`;
+        stars.push(<img key={i} src={src} alt="empty rating" />);
       }
     }
     return stars;
   };
 
-  return <p className="card-text">{buildRatings(ratingValue, ratingType)}</p>;
+  return <p className="card-text">{buildRatings()}</p>;
 };
 
 export default Rating;

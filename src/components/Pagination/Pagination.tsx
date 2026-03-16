@@ -1,14 +1,10 @@
-import React from 'react';
-
-interface IPagination {
+interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (pageNumber: number) => void;
 }
 
-const Pagination: React.FC<IPagination> = (props) => {
-  const { currentPage, totalPages, onPageChange } = props;
-
+const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) => {
   const handlePrevClick = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -21,33 +17,27 @@ const Pagination: React.FC<IPagination> = (props) => {
     }
   };
 
-  const getPageNumbers = () => {
-    const pageNumbers: number[] = [];
-    for (let index = 1; index <= totalPages; index++) {
-      pageNumbers.push(index);
-    }
-    return pageNumbers;
-  };
-  const pageNumbers = getPageNumbers();
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   return (
-    <nav>
+    <nav aria-label="Hotel list pagination">
       <ul className="pagination justify-content-center">
         <li className={`${currentPage === 1 ? 'disabled' : ''} page-item `}>
-          <a className="page-link" href="#" onClick={handlePrevClick}>
+          <button className="page-link" onClick={handlePrevClick} disabled={currentPage === 1}>
             Prev
-          </a>
+          </button>
         </li>
         {pageNumbers.map((pageNumber) => (
           <li key={pageNumber} className={`${pageNumber === currentPage ? 'active' : ''} page-item `}>
-            <a className="page-link" href="#" onClick={() => onPageChange(pageNumber)}>
+            <button className="page-link" onClick={() => onPageChange(pageNumber)}>
               {pageNumber}
-            </a>
+            </button>
           </li>
         ))}
         <li className={`${currentPage === totalPages ? 'disabled' : ''} page-item `}>
-          <a className="page-link" href="#" onClick={handleNextClick}>
+          <button className="page-link" onClick={handleNextClick} disabled={currentPage === totalPages}>
             Next
-          </a>
+          </button>
         </li>
       </ul>
     </nav>

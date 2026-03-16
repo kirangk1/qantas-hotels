@@ -1,13 +1,15 @@
-import React from 'react';
+import './Header.scss';
 
-const Header: React.FC = () => {
+const Header = () => {
   return (
-    <nav className="navbar navbar-dark bg-dark">
-      <a className="navbar-brand" href="/">
-        <img src={`./images/Qantas-Logo.png`} width="50" height="50" className="d-inline-block align-top" alt="" />
-        QANTAS HOTELS
-      </a>
-    </nav>
+    <header className="app-header">
+      <nav className="navbar navbar-dark bg-dark px-4">
+        <a className="navbar-brand fw-bold" href="/">
+          <i className="bi bi-building me-2" />
+          Hotels App
+        </a>
+      </nav>
+    </header>
   );
 };
 

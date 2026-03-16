@@ -1,53 +1,65 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import HotelsList from './HotelsList';
-import { comparePriceFromLowToHigh, comparePriceFromHigToLow, compareByPopularity } from './HotelsList.utils';
-import { HotelsStub1, HotelsStub2 } from '../../stubs/HotelStubs';
+import { renderWithRouter } from '../../test-utils/renderWithRouter';
+import { comparePriceFromLowToHigh, comparePriceFromHighToLow, compareByPopularity } from './utils/compareHelper';
+import { seasideEscapeHotel, desertResortHotel } from '../../fixtures/hotels';
 
-describe('Hotel component', () => {
-  it('should render hotel tile with all the details', () => {
-    render(<HotelsList />);
+describe('HotelsList component', () => {
+  it('should render the sort dropdown with all options', () => {
+    renderWithRouter(<HotelsList />);
 
-    expect(screen.getByTestId('opt1')).toHaveTextContent('Popularity');
-    expect(screen.getByTestId('opt2')).toHaveTextContent('Highest Price');
-    expect(screen.getByTestId('opt3')).toHaveTextContent('Lowest Price');
+    const sortDropdown = screen.getByRole('combobox', { name: 'Sort hotels' });
+    expect(sortDropdown).toBeInTheDocument();
+
+    const options = screen.getAllByRole('option');
+    expect(options).toHaveLength(3);
+    expect(options[0]).toHaveTextContent('Popularity');
+    expect(options[1]).toHaveTextContent('Highest Price');
+    expect(options[2]).toHaveTextContent('Lowest Price');
+  });
+
+  it('should default to Popularity sort', () => {
+    renderWithRouter(<HotelsList />);
+
+    expect(screen.getByRole('combobox', { name: 'Sort hotels' })).toHaveValue('popularity');
   });
 });
 
-describe('Hotel utils', () => {
-  it('should return negative value for comparePriceFromLowToHigh when param 2 price is higher than param 1', () => {
-    const res = comparePriceFromLowToHigh(HotelsStub1, HotelsStub2);
+describe('Sort comparators', () => {
+  it('should sort lower price first with comparePriceFromLowToHigh', () => {
+    const res = comparePriceFromLowToHigh(seasideEscapeHotel, desertResortHotel);
 
     expect(res).toBe(-150);
   });
 
-  it('should return positive value for comparePriceFromLowToHigh when param 1 price is higher than param 2', () => {
-    const res = comparePriceFromLowToHigh(HotelsStub2, HotelsStub1);
+  it('should sort higher price first with comparePriceFromLowToHigh', () => {
+    const res = comparePriceFromLowToHigh(desertResortHotel, seasideEscapeHotel);
 
     expect(res).toBe(150);
   });
 
-  it('should return positive value for comparePriceFromHigToLow when param 1 price is lower than param 2', () => {
-    const res = comparePriceFromHigToLow(HotelsStub1, HotelsStub2);
+  it('should sort higher price first with comparePriceFromHighToLow', () => {
+    const res = comparePriceFromHighToLow(seasideEscapeHotel, desertResortHotel);
 
     expect(res).toBe(150);
   });
 
-  it('should return positive value for comparePriceFromHigToLow when param 2 price is lower than param 1', () => {
-    const res = comparePriceFromHigToLow(HotelsStub2, HotelsStub1);
+  it('should sort lower price first with comparePriceFromHighToLow', () => {
+    const res = comparePriceFromHighToLow(desertResortHotel, seasideEscapeHotel);
 
     expect(res).toBe(-150);
   });
 
-  it('should return positive value for compareByPopularity when param 1 rating is lower than param 2', () => {
-    const res = compareByPopularity(HotelsStub1, HotelsStub2);
+  it('should sort higher rating first with compareByPopularity', () => {
+    const res = compareByPopularity(seasideEscapeHotel, desertResortHotel);
 
     expect(res).toBe(2.5);
   });
 
-  it('should return positive value for compareByPopularity when param 2 rating is lower than param 1', () => {
-    const res = compareByPopularity(HotelsStub2, HotelsStub1);
+  it('should sort lower rating last with compareByPopularity', () => {
+    const res = compareByPopularity(desertResortHotel, seasideEscapeHotel);
 
     expect(res).toBe(-2.5);
   });

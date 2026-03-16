@@ -1,12 +1,12 @@
-import React from 'react';
+import './Footer.scss';
 
-const Footer: React.FC = () => {
+const Footer = () => {
   return (
-    <div className="container-fluid bg-dark">
-      <div className="row align-items-center py-3" style={{ color: 'white', textAlign: 'center' }}>
-        <p>Copyright &copy; Qantas Hotels</p>
+    <footer className="app-footer bg-dark text-white">
+      <div className="container text-center py-3">
+        <p className="mb-0">&copy; {new Date().getFullYear()} Hotels App</p>
       </div>
-    </div>
+    </footer>
   );
 };
 

@@ -1,22 +1,37 @@
-## Qantas Hotels booking website
+# Qantas Hotels App
 
-This application displays Hotels where user can compare price and book their vacation.
+React + TypeScript app for browsing hotels, sorting by price/popularity, and viewing hotel details.
 
-All hotel details and images are stored in public/data and public/images respectively
+## Run Locally
 
-### `yarn install`
+```bash
+npm install
+npm start
+```
 
-To install all the packages before running locally
+or
 
-### `yarn start`
+```bash
+yarn install
+yarn start
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Open `http://localhost:3000`.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Scripts
 
-### `yarn test`
+- `npm test` / `yarn test` -> run tests
+- `npm run build` / `yarn build` -> production build
+- `npm run lint` / `yarn lint` -> lint and auto-fix
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Routes
+
+- `/` -> hotel list
+- `/hotel/:id` -> hotel details
+
+## Data
+
+- `public/data/hotelsDetails.json`
+- `public/images/hotels/`
+
+Assets use `process.env.PUBLIC_URL` so paths work on nested routes.

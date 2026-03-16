@@ -1,6 +1,6 @@
 import { HotelDetailsPayload } from '../types/HotelDetailsPayload';
 
-export const HotelsStub1: HotelDetailsPayload = {
+export const seasideEscapeHotel: HotelDetailsPayload = {
   id: '0419446f-76bb-4f07-9cb4-cb9a4873aa51',
   heroImage: 'https://picsum.photos/id/88/400/300',
   name: 'Seaside Escape',
@@ -30,7 +30,7 @@ export const HotelsStub1: HotelDetailsPayload = {
   img: '1.jpeg',
 };
 
-export const HotelsStub2: HotelDetailsPayload = {
+export const desertResortHotel: HotelDetailsPayload = {
   id: 'bcf42b34-8cb6-487a-b064-fc1aa01ae4e3',
   heroImage: 'https://picsum.photos/id/17/400/300',
   name: 'Desert Resort',

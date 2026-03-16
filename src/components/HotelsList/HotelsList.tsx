@@ -1,94 +1,77 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Hotel from '../Hotel/Hotel';
 import { HotelDetailsPayload, SortTypes } from '../../types/HotelDetailsPayload';
 import './HotelsList.scss';
-import { compareByPopularity, comparePriceFromHigToLow, comparePriceFromLowToHigh } from './HotelsList.utils';
+import { compareByPopularity, comparePriceFromHighToLow, comparePriceFromLowToHigh } from './utils/compareHelper';
 import Pagination from '../Pagination/Pagination';
 
-const HotelsList: React.FC = () => {
+const ITEMS_PER_PAGE = 5;
+
+const getSortComparator = (sortType: SortTypes) => {
+  switch (sortType) {
+    case SortTypes.HighestPrice:
+      return comparePriceFromHighToLow;
+    case SortTypes.LowestPrice:
+      return comparePriceFromLowToHigh;
+    default:
+      return compareByPopularity;
+  }
+};
+
+const HotelsList = () => {
+  const location = useLocation();
+  const restoredPage = (location.state as { page?: number })?.page || 1;
+
   const [hotelsDetails, setHotelsDetails] = useState<HotelDetailsPayload[]>([]);
   const [sortValue, setSortValue] = useState<SortTypes>(SortTypes.Popularity);
-  const [totalItems, setTotalItems] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const itemsPerPage = 5;
-  const [paginatedItems, setPaginatedItems] = useState<HotelDetailsPayload[]>([]);
+  const [currentPage, setCurrentPage] = useState(restoredPage);
 
   useEffect(() => {
-    fetch('./data/hotelsDetails.json')
+    fetch(`${process.env.PUBLIC_URL}/data/hotelsDetails.json`)
       .then((res) => res.json())
-      .then((res) => {
-        setHotelsDetails(res.sort(compareByPopularity));
-        setTotalItems(res.length);
-        setPaginatedItems(res.slice(0, itemsPerPage));
+      .then((data: HotelDetailsPayload[]) => {
+        setHotelsDetails([...data].sort(compareByPopularity));
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.error(err));
   }, []);
 
   const handleSorting = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    e.preventDefault();
-    setSortValue(e.target.value as SortTypes);
-    const sortHotels = () => {
-      console.log('sortHotels:', sortValue, e.target.value);
-      switch (e.target.value) {
-        case SortTypes.HighestPrice:
-          {
-            setHotelsDetails(hotelsDetails.sort(comparePriceFromHigToLow));
-            setPaginatedItems(hotelsDetails.sort(comparePriceFromHigToLow).slice(0, itemsPerPage));
-            setCurrentPage(1);
-          }
-          break;
-        case SortTypes.LowestPrice:
-          {
-            setHotelsDetails(hotelsDetails.sort(comparePriceFromLowToHigh));
-            setPaginatedItems(hotelsDetails.sort(comparePriceFromLowToHigh).slice(0, itemsPerPage));
-            setCurrentPage(1);
-          }
-          break;
-        default: {
-          setHotelsDetails(hotelsDetails.sort(compareByPopularity));
-          setPaginatedItems(hotelsDetails.sort(compareByPopularity).slice(0, itemsPerPage));
-          setCurrentPage(1);
-        }
-      }
-    };
-    sortHotels();
+    const newSortValue = e.target.value as SortTypes;
+    setSortValue(newSortValue);
+    const comparator = getSortComparator(newSortValue);
+    setHotelsDetails((prev) => [...prev].sort(comparator));
+    setCurrentPage(1);
   };
 
   const handlePageChange = (pageNumber: number) => {
-    let start = 0;
-    let end = itemsPerPage;
-    if (pageNumber > 1) {
-      start = (pageNumber - 1) * itemsPerPage;
-      end = (pageNumber - 1) * itemsPerPage + itemsPerPage;
-    }
-    setPaginatedItems(hotelsDetails.slice(start, end));
     setCurrentPage(pageNumber);
   };
 
+  const start = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedItems = hotelsDetails.slice(start, start + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(hotelsDetails.length / ITEMS_PER_PAGE);
+
   return (
-    <>
-      <Form.Select value={sortValue} onChange={handleSorting} className="custom-select">
-        <option data-testid="opt1" value={SortTypes.Popularity}>
-          Popularity
-        </option>
-        <option data-testid="opt2" value={SortTypes.HighestPrice}>
-          Highest Price
-        </option>
-        <option data-testid="opt3" value={SortTypes.LowestPrice}>
-          Lowest Price
-        </option>
-      </Form.Select>
+    <section className="hotels-list-shell">
+      <div className="hotels-list-toolbar">
+        <Form.Select value={sortValue} onChange={handleSorting} className="custom-select" aria-label="Sort hotels">
+          <option value={SortTypes.Popularity}>Popularity</option>
+          <option value={SortTypes.HighestPrice}>Highest Price</option>
+          <option value={SortTypes.LowestPrice}>Lowest Price</option>
+        </Form.Select>
+      </div>
 
-      {paginatedItems &&
-        paginatedItems.map((hotelDetails: HotelDetailsPayload) => <Hotel key={hotelDetails.id} {...hotelDetails} />)}
+      <div className="hotels-list-grid">
+        {paginatedItems.map((hotelDetails) => (
+          <Hotel key={hotelDetails.id} {...hotelDetails} currentPage={currentPage} />
+        ))}
+      </div>
 
-      <Pagination
-        currentPage={currentPage}
-        totalPages={Math.ceil(totalItems / itemsPerPage)}
-        onPageChange={handlePageChange}
-      />
-    </>
+      <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+    </section>
   );
 };
+
 export default HotelsList;
