@@ -56,11 +56,20 @@ const HotelsList = () => {
   return (
     <section className="hotels-list-shell">
       <div className="hotels-list-toolbar">
-        <Form.Select value={sortValue} onChange={handleSorting} className="custom-select" aria-label="Sort hotels">
-          <option value={SortTypes.Popularity}>Popularity</option>
-          <option value={SortTypes.HighestPrice}>Highest Price</option>
-          <option value={SortTypes.LowestPrice}>Lowest Price</option>
-        </Form.Select>
+        <div className="toolbar-meta">
+          <p className="toolbar-eyebrow">Discover</p>
+          <h2 className="toolbar-title">Stays</h2>
+          <p className="toolbar-results">{hotelsDetails.length} properties</p>
+        </div>
+
+        <div className="toolbar-sort-wrap">
+          <span className="toolbar-sort-label">Sort by</span>
+          <Form.Select value={sortValue} onChange={handleSorting} className="custom-select" aria-label="Sort hotels">
+            <option value={SortTypes.Popularity}>Popularity</option>
+            <option value={SortTypes.HighestPrice}>Highest Price</option>
+            <option value={SortTypes.LowestPrice}>Lowest Price</option>
+          </Form.Select>
+        </div>
       </div>
 
       <div className="hotels-list-grid">
